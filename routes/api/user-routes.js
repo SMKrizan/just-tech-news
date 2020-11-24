@@ -5,7 +5,10 @@ const { User } = require('../../models');
 // GET /api/users
 router.get('/', (req, res) => {
     // access 'User' model and run 'findAll()' method (equivalent to SQL's "SELECT * FROM users") so that when client makes GET request to this specific endpoint, all users will be selected from the user table in the db and sent back as JSON
-    User.findAll()
+    User.findAll({
+        // if we want to exclude more than one attribute, just add to the array
+        attributes: { exclude: ['password'] } 
+    })
         .then(dbUserData => res.json(dbUserData))
         .catch(err => {
             console.log(err);
@@ -17,6 +20,7 @@ router.get('/', (req, res) => {
 router.get('/:id', (req, res) => {
     // passing an argument into the 'findOne' method (equivalent to SQL's "SELECT * FROM users WHERE id = 1")
     User.findOne({
+        attributes: { exclude: ['password'] },  
         where: {
             id: req.params.id
         }

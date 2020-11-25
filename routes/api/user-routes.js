@@ -57,6 +57,7 @@ router.post('/', (req, res) => {
 router.put('/:id', (req, res) => {
     // combines methods for creating and looking up data; 'req.body' provides the new data
     User.update(req.body, {
+        individualHooks: true,
         where: {
             // 'req.params.id' indicates where new data should be applied; (equivalient to SQL's "UPDATE users SET username = 'uname', email = 'uem', password = 'upwd' WHERE id = 1")
             id: req.params.id

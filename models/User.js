@@ -1,6 +1,7 @@
 // 'Model' class is what/where local models will be created using 'extends' keyword
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../config/connection');
+const bcrypt = require('bcrypt');
 
 // create user model whereby 'User' class will inherit all functionality of 'Model' class
 class User extends Model {}
@@ -48,8 +49,30 @@ User.init(
     },
     // configures table options
     {
-        // TABLE CONFIGURATION OPTIONS GO HERE (https://sequelize.org/v5/manual/models-definition.html#configuration)
-        
+        // 'hooks' property is added to 2nd object of User.init()
+        // hooks: {
+        //     // sets up 'beforeCreate' lifecycle "hook" functionality to fire just before a new "user" is created --executes 'bcrypt' hash function on the plaintext password
+        //     beforeCreate(userData) {
+        //         // passes in 'userData' (pre-hash data) object containing plaintext password and saltRound value of 10; resulting hashed password is then passed to Promise object as 'newUserData' (post-hash data) object with hashed password property. Finally, 'return' exits out of function.
+        //         return bcrypt.hash(userData.password, 10).then(newUserData => {
+        //             return newUserData
+        //         });
+        //     }
+        // },       
+        // streamlined version of the above:
+        hooks: {
+            // async/await combo work together to make an async function that looks more like a regular synchronous function expression; 'async' is used as prefix to function containing asynchronous function
+            async beforeCreate(newUserData) {
+                // 'await is prefix to asynchronous function, where value from response is assigned to 'newUserData' password property. 'newUserData' is then returned with hashed password
+                newUserData.password = await bcrypt.hash(newUserData.password, 10);
+                return newUserData;
+            },
+            // sets up beforeCreate lifecycle hook functionality
+            async beforeUpdate(updatedUserData) {
+                updatedUserData.password = await bcrypt.hash(updatedUserData.password, 10);
+                return updatedUserData;
+            }
+        },
         // pass in imported sequelize connection (the direct connection to our database)
         sequelize,
         // do not automatically create createdAt/updatedAt timestamp fields

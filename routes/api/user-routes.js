@@ -53,6 +53,30 @@ router.post('/', (req, res) => {
     });
 });
 
+// POST method carries the request parameter within the req.body (as opposed to the carrying the parameter appended in the URL string as is the case with GET) which makes POST a more secure way to transfer data from client to server
+router.post('/login', (req, res) => {
+    // query user table using 'fineOne' method for email as entered by user and assign it to 'req.body.email'
+    User.findOne({
+        // looks for user with specified email
+        where: {
+            email: req.body.email
+        }
+    // result of query is passed as 'dbUserData'    
+    }).then(dbUserData => {
+        if (!dbUserData) {
+            res.status(400).json({ message: 'No user with that email address!' });
+            return;
+        }
+        // if query is successful 'checkPassword' is called on the 'dbUserData' object using the plaintext password, called as req.body.password; the 'compareSync' method is inside of 'checkPawword' and will confirm or deny whether supplied password matches hashed password, returning a boolean to to the variable 'validPassword'
+        const validPassword = dbUserData.checkPassword(req.body.password);
+        if (!validPassword) {
+            res.status(400).json({ message: 'Incorrect password!' });
+            return;
+        }
+        res.json({ user: dbUserData, message: 'You are now logged in!' });
+    });
+});
+
 // PUT /api/users/1
 router.put('/:id', (req, res) => {
     // combines methods for creating and looking up data; 'req.body' provides the new data

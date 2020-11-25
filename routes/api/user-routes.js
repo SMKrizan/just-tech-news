@@ -83,7 +83,7 @@ router.put('/:id', (req, res) => {
     User.update(req.body, {
         individualHooks: true,
         where: {
-            // 'req.params.id' indicates where new data should be applied; (equivalient to SQL's "UPDATE users SET username = 'uname', email = 'uem', password = 'upwd' WHERE id = 1")
+            // 'req.params.id' indicates where new data should be applied; (equivalient to SQL's "UPDATE users SET username = 'wweast', email = 'wweast@notkansas.net', password = 'wicked' WHERE id = 5")
             id: req.params.id
         }
     })

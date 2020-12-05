@@ -1,12 +1,24 @@
+const path = require('path');
+
 const express = require('express');
-const routes = require('./routes');
-const sequelize = require('./config/connection');
+// template engine:
+const exphbs = require('express-handlebars');
 
 const app = express();
+const routes = require('./controllers/');
+const sequelize = require('./config/connection');
+
 const PORT = process.env.PORT || 3001;
+const hbs = exphbs.create({});
+
+app.engine('handlebars', hbs.engine);
+app.set('view engine', 'handlebars');
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// url space-handling
+app.use(express.urlencoded({ extended: false }));
+// the following 'express.static' method is is a built-in Express.js middlewear function that takes all contents of a folder and delivers them as static assets, which is helpful for front-end specific files like images, stylesheets and js files.
+app.use(express.static(path.join(__dirname, 'public')));
 
 // turns on routes
 app.use(routes);

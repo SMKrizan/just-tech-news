@@ -13,8 +13,6 @@ router.get('/', (req, res) => {
             'created_at',
             [sequelize.literal('(SELECT COUNT(*) FROM vote WHERE post.id = vote.post_id)'), 'vote_count']
         ],
-        // making an 'ORDER BY' assignment for posts to be listed in descending order of creation
-        order: [['created_at', 'DESC']],
         include: [
             {
                 model: Comment,
@@ -36,7 +34,11 @@ router.get('/', (req, res) => {
             }
         ]
     })
-        .then(dbPostData => res.json(dbPostData))
+        .then(dbPostData => {
+            // passes a single post object into the homepage template
+            console.log('dbPostData[0]: ', dbPostData[0]);
+            res.render('homepage', dbPostData[0]);
+        })
         .catch(err => {
             console.log(err);
             res.status(500).json(err);

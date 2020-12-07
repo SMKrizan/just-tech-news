@@ -101,7 +101,7 @@ router.post('/login', (req, res) => {
         // if query is successful 'checkPassword' is called on the 'dbUserData' object using the plaintext password, called as req.body.password; the 'compareSync' method is inside of 'checkPassword' and will confirm or deny whether supplied password matches hashed password, returning a boolean to to the variable 'validPassword'
         const validPassword = dbUserData.checkPassword(req.body.password);
         console.log('validPassword: ', validPassword);
-        console.log()
+        console.log('req.session: ', req.session);
         if (!validPassword) {
             res.status(400).json({ message: 'Incorrect password!' });
             return;

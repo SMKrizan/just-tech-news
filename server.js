@@ -28,6 +28,9 @@ const sess = {
 app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
 
+// important to place this before app.use(express.json()); something in that way that the browser stores the session so it needs to be called before the app.use(express.json())
+app.use(session(sess));
+
 app.use(express.json());
 // url space-handling
 app.use(express.urlencoded({ extended: false }));
@@ -36,8 +39,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // turns on routes
 app.use(routes);
-
-app.use(session(sess));
 
 // turns on connection to db and server; 'sync' indicates that Sequelize is taking the models and connecting them to associated database tables and if a database is not found it will create one. Also - "force: true" will recreate the tables if there are any association changes, but which also drops all seed data that has been entered (whereas "force: false" would prevent all tables from automatically beng dropped and re-created on startup - similar to SQL's "DROP TABLE IF EXISTS"). In short: switch briefly to "true" any time the relationships between tables changes, so that the tables will be re-created. Afterwards, switch back to "false".
 sequelize.sync({ force: false }).then(() => {

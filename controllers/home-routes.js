@@ -2,6 +2,7 @@ const router = require('express').Router();
 const sequelize = require('../config/connection');
 const { Post, User, Comment } = require('../models');
 
+
 router.get('/', (req, res) => {
     // now that we are using a template engine, we can use "render" rather than "res.send()" or "res.sendFile()" for the response. Here we are asking for the "homepage.handlebars" template to be rendered. Handlebars will feed this 'homepage' template into the main.handlebars template and respond with a complete html file.
     Post.findAll({
@@ -22,12 +23,14 @@ router.get('/', (req, res) => {
                     'user_id',
                     'created_at'
                 ],
+                // 'user_id' enables access to username of the person who made the comment
                 include: {
                     model: User,
                     attributes: ['username']
                 }
             },
             {
+                // username of the person who made the post (parent)
                 model: User,
                 attributes: ['username']
             }
@@ -44,6 +47,10 @@ router.get('/', (req, res) => {
             console.log(err);
             res.status(500).json(err);
         });
+});
+
+router.get('/login', (req, res) => {
+    res.render('login');
 });
 
 module.exports = router;

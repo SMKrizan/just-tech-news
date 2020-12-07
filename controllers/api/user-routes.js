@@ -100,8 +100,6 @@ router.post('/login', (req, res) => {
         }
         // if query is successful 'checkPassword' is called on the 'dbUserData' object using the plaintext password, called as req.body.password; the 'compareSync' method is inside of 'checkPassword' and will confirm or deny whether supplied password matches hashed password, returning a boolean to to the variable 'validPassword'
         const validPassword = dbUserData.checkPassword(req.body.password);
-        console.log('validPassword: ', validPassword);
-        console.log('req.session: ', req.session);
         if (!validPassword) {
             res.status(400).json({ message: 'Incorrect password!' });
             return;
@@ -118,6 +116,17 @@ router.post('/login', (req, res) => {
         console.log(err);
         res.status(500).json(err);
     });
+});
+
+// since 'logout' will not have an associated page it should be a button, but can be styled like a link
+router.post('/logout', (req, res) => {
+    if (req.session.loggedIn) {
+        req.session.destroy(() => {
+            res.status(204).end();
+        });
+    } else {
+        res.status(404).end();
+    }
 });
 
 // PUT /api/users/1

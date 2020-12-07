@@ -38,8 +38,6 @@ router.get('/', (req, res) => {
     })
         .then(dbPostData => {
             // passes a single post object into the homepage template; using 'model.get({ plain: true })' method in order to serialize each Sequelize object, that is, limit the response to include only the specified attributes rather than the extensive Sequelize object. Use of the '.map()' method loops through each Sequelize object and then saves the results to a new 'posts' array
-            console.log('dbPostData[0]: ', dbPostData[0]);
-            console.log('dbPostData[0].get({ plain: true }): ', dbPostData[0].get({ plain: true }))
             const posts = dbPostData.map(post => post.get({ plain: true }));
             res.render('homepage', { posts });
         })
@@ -50,6 +48,12 @@ router.get('/', (req, res) => {
 });
 
 router.get('/login', (req, res) => {
+    // redirects to the homepage when there's an active session
+    if (req.session.loggedIn) {
+        res.redirect('/');
+        return;
+    }
+
     res.render('login');
 });
 

@@ -36,7 +36,6 @@ router.get('/', (req, res) => {
     })
         .then(dbPostData => {
             // passes a single post object into the homepage template
-            console.log('dbPostData[0]: ', dbPostData[0]);
             res.render('homepage', dbPostData[0]);
         })
         .catch(err => {

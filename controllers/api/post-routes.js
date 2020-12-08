@@ -45,6 +45,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/:id', (req, res) => {
+    console.log('req.params.id: ', req.params.id);
     Post.findOne({
         where: {
             id: req.params.id

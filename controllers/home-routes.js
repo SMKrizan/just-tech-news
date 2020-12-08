@@ -39,7 +39,10 @@ router.get('/', (req, res) => {
         .then(dbPostData => {
             // passes a single post object into the homepage template; using 'model.get({ plain: true })' method in order to serialize each Sequelize object, that is, limit the response to include only the specified attributes rather than the extensive Sequelize object. Use of the '.map()' method loops through each Sequelize object and then saves the results to a new 'posts' array
             const posts = dbPostData.map(post => post.get({ plain: true }));
-            res.render('homepage', { posts });
+            res.render('homepage', {
+                posts,
+                loggedIn: req.session.loggedIn
+            });
         })
         .catch(err => {
             console.log(err);
@@ -96,22 +99,25 @@ router.get('/post/:id', (req, res) => {
             }
         ]
     })
-    .then(dbPostData => {
-        if (!dbPostData) {
-            res.status(404).json({ message: 'There is no post with this id' });
-            return;
-        }
+        .then(dbPostData => {
+            if (!dbPostData) {
+                res.status(404).json({ message: 'There is no post with this id' });
+                return;
+            }
 
-        // serializes data
-        const post = dbPostData.get({ plain: true });
+            // serializes data
+            const post = dbPostData.get({ plain: true });
 
-        // passes data to template
-        res.render('single-post', { post });
-    })
-    .catch(err => {
-        console.log(err);
-        res.status(500).json(err);
-    });
+            // passes data to template
+            res.render('single-post', {
+                post,
+                loggedIn: req.session.loggedIn
+            });
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json(err);
+        });
 });
 
 module.exports = router;

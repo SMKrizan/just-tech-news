@@ -7,9 +7,6 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-    console.log('req.session: ', req.session);
-    console.log('req.body: ', req.body);
-
     if (req.session) {
         Comment.create({
             comment_text: req.body.comment_text,

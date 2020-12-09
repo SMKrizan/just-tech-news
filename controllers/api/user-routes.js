@@ -1,6 +1,6 @@
 const router = require('express').Router();
-const { User, Post, Vote, Comment } = require('../../models');
 const withAuth = require('../../utils/auth');
+const { User, Post, Vote, Comment } = require('../../models');
 
 // the conventions utilized here wrt naming follows the REST architectural pattern (Representational State Transfer), creating what is known as a "ReSTful API" which (among others) applies the following guidelines: 1) use endpoint names that describe the data with which endpoints will be interfacing, 2) use HTTP methods like GET, POST etc... to describe action being performed by endpoint interface, and 3) use associated error codes, e.g. 400, 404, 500 etc.
 // GET /api/users
@@ -21,10 +21,10 @@ router.get('/', (req, res) => {
 router.get('/:id', (req, res) => {
     // passing an argument into the 'findOne' method (equivalent to SQL's "SELECT * FROM users WHERE id = 1")
     User.findOne({
+        attributes: { exclude: ['password'] },
         where: {
             id: req.params.id
         },
-        attributes: { exclude: ['password'] },
         include: [
             {
                 model: Post,
@@ -88,6 +88,7 @@ router.post('/', withAuth, (req, res) => {
 // POST method carries the request parameter within the req.body (as opposed to the carrying the parameter appended in the URL string as is the case with GET) which makes POST a more secure way to transfer data from client to server
 router.post('/login', withAuth, (req, res) => {
     // query user table using 'fineOne' method for email as entered by user and assign it to 'req.body.email'
+    console.log('TEST user-routes.js');
     User.findOne({
         // looks for user with specified email
         where: {
